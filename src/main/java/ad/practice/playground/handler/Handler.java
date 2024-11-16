@@ -1,17 +1,8 @@
 package ad.practice.playground.handler;
 
-import ad.practice.playground.secure_messaging.SignatureFerififier;
-import ad.practice.playground.solution.*;
-import ad.practice.playground.solution.binary_tree.BinaryTree;
-import ad.practice.playground.solution.sorting_algo.BubbleSort;
-import ad.practice.playground.solution.sorting_algo.InsertionSort;
-import ad.practice.playground.solution.sorting_algo.SelectionSort;
+import ad.practice.playground.secure_messaging.RSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Handler {
     private static final Logger logger = LoggerFactory.getLogger(Handler.class);
@@ -29,8 +20,12 @@ public class Handler {
 
       */
 
-        SignatureFerififier sf = new SignatureFerififier();
-        sf.verifyRSASignature();
+        try {
+            RSA rsa = new RSA();
+            rsa.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
