@@ -1,6 +1,10 @@
 package ad.practice.playground.solution.segment_tree;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SegmentTree {
+    private static Logger logger = LoggerFactory.getLogger(SegmentTree.class);
     private int n;
     private int[] minTree, maxTree, sumTree;
 
@@ -56,6 +60,29 @@ public class SegmentTree {
         return Math.max(queryMax(2*node+1, l, r, start, mid), queryMax(2*node+2,l,r,mid+1, end));
     }
 
+    public void update(int index, int value){
+        update(0,0,n-1,index,value);
+    }
+
+    private void update(int node, int start, int end, int index, int value){
+        if(start == end){
+            minTree[node] = maxTree[node] = sumTree[node] = value;
+            return;
+        }
+        int mid = (start+end)/2;
+        if(index <= mid){
+            update(2*node+1, start, mid, index, value);
+        }
+        else{
+            update(2*node+2, mid+1, end,index, value);
+        }
+        sumTree[node] = sumTree[node*2+1]+sumTree[node*2+1];
+        minTree[node] = Math.min(minTree[node*2+1], minTree[2*node+2]);
+        maxTree[node] = Math.max(maxTree[node*2+1], maxTree[node*2+2]);
+        logger.info("updated sum : {}, min : {}, max : {} ", sumTree[node], maxTree[node], minTree[node]);
+    }
+
+
 
 
     public static void main(String []a){
@@ -64,6 +91,13 @@ public class SegmentTree {
         System.out.println("sum = "+segmentTree.querySum(3,6));
         System.out.println("min = " + segmentTree.queryMin(3,6));
         System.out.println("max = "+segmentTree.queryMax(3,6));
+        for(int i = 3;i<=6; i++){
+            segmentTree.update(i, A[i]+1);
+        }
+        logger.info("A = {}, mintree :{}, maxtree:{}, sumtree:{}", A, segmentTree.minTree, segmentTree.maxTree, segmentTree.sumTree);
+        logger.info("sum(3,6) = :{}",segmentTree.querySum(3,6));
+        logger.info("sum(2,7) = :{}", segmentTree.querySum(2,7));
+        logger.info("max = {}",segmentTree.querySum(0,segmentTree.n-1));
     }
 
 

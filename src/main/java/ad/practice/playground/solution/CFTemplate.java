@@ -63,56 +63,83 @@ public class CFTemplate {
 
     public static void main(String[] args) {
        FastIO io = new FastIO();
-       Map<Integer, String>findMap =  countNum();
-       int t = io.nextInt();
-       while (t -- > 0){
-           int n = io.nextInt();
-           if(findMap.get(n) != null){
-               System.out.println(findMap.get(n));
-           }
-           else System.out.println("-1");
-       }
+       String s = "acbbcac";
+       System.out.println(numberOfSubstrings(s));
 
     }
-    public static Map<Integer, String> countNum(){
-        Map<Integer, String> mp = new HashMap<>();
-        mp.put(1,"-1");
-       //mp.put(2,"66");
-        StringBuilder sb = new StringBuilder();
-        sb.append("66");
-        Queue<StringBuilder>q = new LinkedList<>();
-        q.offer(sb);
-        while (! q.isEmpty()){
-            StringBuilder current = q.poll();
-            if(current.toString().length() > 500) break;
-            long currentNum = Long.parseLong(current.toString());
-            if(currentNum % 66 == 0){
-                int len = current.toString().length();
-                if(mp.containsKey(len)){
-                    mp.put(len, String.valueOf(Math.min(currentNum,Long.parseLong(mp.get(len)))));
+
+
+        public static int[] applyOperations(int[] nums) {
+            int n = nums.length;
+            int i = 0;
+            while(i < n-1){
+                if( nums[i] == nums[i+1]){
+                    nums[i] *= 2;
+                    nums[i+1] = 0;
                 }
-                else
-                mp.put(len, Long.toString(currentNum));
-              /*  while (! q.isEmpty() && q.peek().length() == len){
-                    StringBuilder currsb = q.poll();
-                    Long num = Long.parseLong(currsb.toString());
-                    if(num % 66 == 0 && num < currentNum){
-                        mp.put(len,currsb.toString());
-                        currsb.insert(0,"3");
-                        q.offer(sb);
-                        currsb.deleteCharAt(0);
-                        currsb.insert(0,"6");
-                        q.offer(currsb);
-                    }
-                }*/
+                i++;
             }
-            current.insert(0,"3");
-            q.offer(current);
-            current.deleteCharAt(0);
-            current.insert(0,"6");
-            q.offer(current);
+            int left = 0;
+            int right = 0;
+            while(right < n){
+                if(nums[right] != 0){
+                    nums[left] = nums[right];
+                    left++;
+                }
+                right++;
+            }
+            for(i = left+1; i <n;i++){
+                nums[i] = 0;
+            }
+            return nums;
         }
-        return mp;
+
+
+    public static int numberOfSubstrings(String s) {
+        int n = s.length();
+        int left = 0;
+        int right = 2;
+        Map<Character, Integer> mp = new HashMap<>();
+        for(int i = left;i <= right; i++){
+            mp.put(s.charAt(i), mp.getOrDefault(s.charAt(i), 0)+1);
+        }
+        int ans = 0;
+
+        while(right < n){
+            if(isValid(mp)){
+                ans += countInWindow(s.substring(left, right+1));
+                ans += (n-right-1);
+                char leftChar = s.charAt(left);
+                mp.put(leftChar,mp.get(leftChar)-1);
+                left++;
+
+            }
+            right++;
+            if(right == n)break;
+            char rightChar = s.charAt(right);
+            mp.put(rightChar, mp.getOrDefault(rightChar,0)+1);
+        }
+        return ans;
 
     }
+
+    private static int countInWindow(String s){
+        int count = 0;
+        Map<Character, Integer> mp = new HashMap<>();
+        for(int i = s.length()-1; i >=0; i--){
+            char c = s.charAt(i);
+            mp.put(c,mp.getOrDefault(c,0)+1);
+            if(isValid(mp)){
+                count++;
+                count+=i;
+                break;
+            }
+        }
+        return count;
+    }
+
+    private static boolean isValid(Map<Character, Integer> mp){
+        return (mp.containsKey('a') && mp.containsKey('b') && mp.containsKey('c'));
+    }
+
 }
