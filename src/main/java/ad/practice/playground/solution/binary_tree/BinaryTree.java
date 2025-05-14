@@ -26,6 +26,7 @@ public class BinaryTree {
      root = insertRecursive(root, value);
      logger.info("Inserted->"+value);
     }
+
     private Node insertRecursive(Node current, int value){
         if(current == null){
             return new Node(value);
@@ -117,6 +118,47 @@ public class BinaryTree {
                 q.offer(node.left);
             }
         }
+    }
+
+    public int maxPathSum(Node root){
+        int ans = Integer.MIN_VALUE;
+        Queue<Node> q = new LinkedList<>();
+        if(root != null) q.offer(root);
+        while (! q.isEmpty()){
+            Node curr = q.poll();
+            if(curr.left == null && curr.right == null){
+                logger.info("curr val : {}", curr.value);
+                ans = Math.max(ans, curr.value);
+
+            }
+            if(curr.left != null){
+                curr.left.value += curr.value;
+                q.offer(curr.left);
+            }
+            if(curr.right != null){
+                curr.right.value += curr.value;
+                q.offer(curr.right);
+            }
+        }
+        return  ans;
+    }
+
+    List<Node> twoSum(Node root, int target){
+        List<Node> ans = new ArrayList<>();
+        Map<Integer, Node> mp = new HashMap<>();
+        Queue<Node> q = new LinkedList<>();
+        if(root != null)q.offer(root);
+        while (! q.isEmpty()){
+            Node curr = q.poll();
+            if(mp.containsKey(target - curr.value)){
+                ans.addAll(List.of(curr, mp.get(target-curr.value)));
+                break;
+            }
+            mp.put(curr.value, curr);
+            if(curr.left != null) q.offer(curr.left);
+            if(curr.right != null) q.offer(curr.right);
+        }
+        return ans;
     }
 
 }

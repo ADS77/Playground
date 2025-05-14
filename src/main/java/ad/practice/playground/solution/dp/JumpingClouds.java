@@ -5,7 +5,7 @@ import java.util.List;
 
 public class JumpingClouds {
     public static void main(String[] a){
-        List<Integer> ls = Arrays.asList(0, 0, 1, 0,0 ,1 ,0);
+        List<Integer> ls = Arrays.asList(0, 0, 0,1,0,0);
         System.out.println(jumpingOnClouds(ls));
     }
     public static int jumpingOnClouds(List<Integer> c) {
