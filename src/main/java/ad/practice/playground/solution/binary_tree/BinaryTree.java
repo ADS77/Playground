@@ -8,16 +8,6 @@ import java.util.*;
 
 public class BinaryTree {
     private static final Logger logger = LoggerFactory.getLogger(BinaryTree.class);
-    static class Node {
-        int value;
-        Node left;
-        Node right;
-
-        public Node(int value) {
-            this.value = value;
-            this.left = this.right = null;
-        }
-    }
 
     public static Node root;
 
@@ -31,10 +21,10 @@ public class BinaryTree {
         if(current == null){
             return new Node(value);
         }
-        if(value < current.value){
-            current.left = insertRecursive(current.left, value);
-        } else if (value > current.value) {
-            current.right = insertRecursive(current.right, value);
+        if(value < current.getValue()){
+            current.setLeft(insertRecursive(current.getLeft(), value));
+        } else if (value > current.getValue()) {
+            current.setRight(insertRecursive(current.getRight(), value));
 
         }
         return current;
@@ -46,30 +36,30 @@ public class BinaryTree {
 
     private boolean findRecursive(Node root, int val) {
         if (root == null) return false;
-        if (root.value == val) return true;
-        return val < root.value ? findRecursive(root.left, val) : findRecursive(root.right, val);
+        if (root.getValue() == val) return true;
+        return val < root.getValue() ? findRecursive(root.getLeft(), val) : findRecursive(root.getRight(), val);
     }
 
 
     public void preOrder(Node root){
         if(root == null) return;
-        logger.info("{}", root.value);
-        preOrder(root.left);
-        preOrder(root.right);
+        logger.info("{}", root.getValue());
+        preOrder(root.getLeft());
+        preOrder(root.getRight());
     }
 
     public void inOrder(Node root){
         if(root == null) return;;
-        inOrder(root.left);
-        logger.info("{}", root.value);
-        inOrder(root.right);
+        inOrder(root.getLeft());
+        logger.info("{}", root.getValue());
+        inOrder(root.getRight());
     }
 
     public void postOrder(Node root){
         if(root == null) return;;
-        postOrder(root.left);
-        postOrder(root.right);
-        logger.info("{}", root.value);
+        postOrder(root.getLeft());
+        postOrder(root.getRight());
+        logger.info("{}", root.getValue());
     }
 
     public List<List<Integer>> lavelOrderIterative(Node root){
@@ -82,10 +72,10 @@ public class BinaryTree {
             int size = q.size();
             for(int i = 0;i<size;i++){
                 Node node = q.poll();
-                logger.info("Lvl_Itr + {}", node.value);
-                if(node.left != null) q.offer(node.left);
-                if(node.right != null) q.offer(node.right);
-                subList.add(node.value);
+                logger.info("Lvl_Itr + {}", node.getValue());
+                if(node.getLeft() != null) q.offer(node.getLeft());
+                if(node.getRight() != null) q.offer(node.getRight());
+                subList.add(node.getValue());
             }
             ls.add(subList);
         }
@@ -99,25 +89,27 @@ public class BinaryTree {
         while (! st.isEmpty() || current != null){
             while (current != null){
                 st.push(current);
-                current = current.left;
+                current = current.getLeft();
             }
             current = st.pop();
-            logger.info("In_Itr {}", current.value);
-            current = current.right;
+            logger.info("In_Itr {}", current.getValue());
+            current = current.getRight();
         }
     }
 
-    public void preOrderIterative(Node root){
-        if(root == null) return;
-        Queue<Node>q = new LinkedList<>();
-        q.offer(root);
-        while (! q.isEmpty()){
-            Node node = q.poll();
-            logger.info("Pre_itr {}", node.value);
-            if (node.left != null){
-                q.offer(node.left);
-            }
+    public List<Integer> preOrderIterative(Node root){
+        // root -> left -> right
+        List<Integer> ans = new ArrayList<>();
+        if(root == null) return ans;
+        Stack<Node> st = new Stack<>();
+        st.push(root);
+        while (! st.isEmpty()){
+            Node curr = st.pop();
+            ans.add(curr.getValue());
+            if(curr.getRight() != null) st.push(curr.getRight());
+            if(curr.getLeft() != null) st.push(curr.getLeft());
         }
+        return ans;
     }
 
     public int maxPathSum(Node root){
@@ -126,18 +118,18 @@ public class BinaryTree {
         if(root != null) q.offer(root);
         while (! q.isEmpty()){
             Node curr = q.poll();
-            if(curr.left == null && curr.right == null){
-                logger.info("curr val : {}", curr.value);
-                ans = Math.max(ans, curr.value);
+            if(curr.getLeft() == null && curr.getRight() == null){
+                logger.info("curr val : {}", curr.getValue());
+                ans = Math.max(ans, curr.getValue());
 
             }
-            if(curr.left != null){
-                curr.left.value += curr.value;
-                q.offer(curr.left);
+            if(curr.getLeft() != null){
+                curr.getLeft().value += curr.getValue();
+                q.offer(curr.getLeft());
             }
-            if(curr.right != null){
-                curr.right.value += curr.value;
-                q.offer(curr.right);
+            if(curr.getRight() != null){
+                curr.getRight().value += curr.value;
+                q.offer(curr.getRight());
             }
         }
         return  ans;
@@ -150,13 +142,13 @@ public class BinaryTree {
         if(root != null)q.offer(root);
         while (! q.isEmpty()){
             Node curr = q.poll();
-            if(mp.containsKey(target - curr.value)){
-                ans.addAll(List.of(curr, mp.get(target-curr.value)));
+            if(mp.containsKey(target - curr.getValue())){
+                ans.addAll(List.of(curr, mp.get(target- curr.getValue())));
                 break;
             }
-            mp.put(curr.value, curr);
-            if(curr.left != null) q.offer(curr.left);
-            if(curr.right != null) q.offer(curr.right);
+            mp.put(curr.getValue(), curr);
+            if(curr.getLeft() != null) q.offer(curr.getLeft());
+            if(curr.getRight() != null) q.offer(curr.getRight());
         }
         return ans;
     }
