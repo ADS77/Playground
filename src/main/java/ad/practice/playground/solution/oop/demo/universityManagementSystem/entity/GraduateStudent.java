@@ -1,13 +1,15 @@
 package ad.practice.playground.solution.oop.demo.universityManagementSystem.entity;
 
+import ad.practice.playground.solution.oop.demo.universityManagementSystem.enums.Department;
+
 public class GraduateStudent extends Student{
     private String researchTopic;
     private String supervisor;
 
     public GraduateStudent(String id, String name, String email, String phone,
-                           String department, int semester,
-                           String researchTopic, String supervisor) {
-        super(id, name, email, phone, department, semester);
+                           Department department, int semester,
+                           String researchTopic, String supervisor, double tuitionFees) {
+        super(id, name, email, phone, department, semester, tuitionFees);
         this.researchTopic = researchTopic;
         this.supervisor = supervisor;
     }
